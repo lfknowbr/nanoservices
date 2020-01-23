@@ -58,7 +58,7 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
+  tag:
     handler: handler.tag
     role: arn:aws:iam::935245962507:role/lambda-sqs-rekognition
 #    The following are a few example events you can configure
