@@ -1,0 +1,31 @@
+const AWS = require('aws-sdk')
+
+AWS.config.update({
+  region: 'us-east-1'
+})
+
+const rekognition = new AWS.Rekognition()
+
+const detectLabes = (bucket, key) => {
+  return new Promise((resolve, reject) => {
+    rekognition.detectLabels({
+      Image: {
+        S3Object: {
+          Bucket: bucket,
+          Name: key
+        }
+      },
+      MinConfidence: 80,
+      MaxLabels: 6
+    }, (err, data) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve(data.Labels.map(label => label.Name))
+    })
+  })
+}
+
+module.exports = {
+  detectLabes: detectLabes
+}
