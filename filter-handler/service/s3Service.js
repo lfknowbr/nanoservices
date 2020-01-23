@@ -32,7 +32,10 @@ const putObject = (buffer, filename) => {
       if (err) {
         return reject(err)
       }
-      return resolve(data)
+      return resolve({
+        bucket: BUCKET,
+        key: `${filename}`
+      })
     })
   })
 }

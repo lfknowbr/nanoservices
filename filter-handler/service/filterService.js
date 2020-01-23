@@ -1,5 +1,6 @@
 const jimp = require('jimp')
 const s3Service = require('./s3Service')
+const sqsService = require('./sqsService')
 
 const filter = async event => {
   const s3Info = JSON.parse(event.Records[0].Sns.Message)
@@ -8,7 +9,9 @@ const filter = async event => {
   const objetoS3 = await s3Service.getObject(bucket, key)
   const image = await jimp.read(objetoS3)
   const buffer = await image.greyscale().quality(80).getBufferAsync(jimp.MIME_JPEG)
-  await s3Service.putObject(buffer, key)
+  const filterData = await s3Service.putObject(buffer, key)
+  filterData.eventType = 'FILTER_EVENT'
+  await sqsService.putMessage(filterData)
 }
 
 module.exports = {
