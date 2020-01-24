@@ -7,10 +7,11 @@ const filter = async event => {
   const bucket = s3Info.Records[0].s3.bucket.name
   const key = s3Info.Records[0].s3.object.key
   const objetoS3 = await s3Service.getObject(bucket, key)
-  const image = await jimp.read(objetoS3)
-  const buffer = await image.greyscale().quality(80).getBufferAsync(jimp.MIME_JPEG)
+  const imagem = await jimp.read(objetoS3)
+  const buffer = await imagem.greyscale().quality(80).getBufferAsync(jimp.MIME_JPEG)
   const filterData = await s3Service.putObject(buffer, key)
   filterData.eventType = 'FILTER_EVENT'
+
   await sqsService.putMessage(filterData)
 }
 

@@ -6,7 +6,7 @@ AWS.config.update({
 
 const rekognition = new AWS.Rekognition()
 
-const detectLabes = (bucket, key) => {
+const detectLabels = (bucket, key) => {
   return new Promise((resolve, reject) => {
     rekognition.detectLabels({
       Image: {
@@ -19,7 +19,7 @@ const detectLabes = (bucket, key) => {
       MaxLabels: 6
     }, (err, data) => {
       if (err) {
-        return reject(err)
+        return (reject(err))
       }
       return resolve(data.Labels.map(label => label.Name))
     })
@@ -27,5 +27,5 @@ const detectLabes = (bucket, key) => {
 }
 
 module.exports = {
-  detectLabes: detectLabes
+  detectLabels: detectLabels
 }

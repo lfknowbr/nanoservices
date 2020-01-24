@@ -1,53 +1,33 @@
 'use strict'
-const AWS = require('aws-sdk')
-const elasticsearch = require('elasticsearch')
+const elasticSearchService = require('./service/elasticsearchService')
+const dynamodbService = require('./service/dynamodbService')
 
-AWS.config.update({
-  region: 'us-east-1'
-})
-
-const dynamo = new AWS.DynamoDB.DocumentClient()
-
-const client = new elasticsearch.Client({
-  apiVersion: '7.1',
-  host: 'https://vpc-elasticsearch-nanoservice-go6g4oied3o32makuxgkkbiw2u.us-east-1.es.amazonaws.com'
-})
-
-module.exports.consumer = async event => {
-  try {
-    await client.search({
-      index: 'index',
-      q: '*'
-    })
-  } catch (error) {
-    console.log(error)
+module.exports.consumer = async (event) => {
+  for (const record of event.Records) {
+    const item = JSON.parse(record.body)
+    const dbItem = await dynamodbService.getItem(item.key)
+    switch (item.eventType) {
+      case 'TAG_EVENT':
+        await elasticSearchService.index({
+          id: item.key,
+          tags: item.labels
+        })
+        dbItem.labels = item.labels
+        break
+      case 'FILTER_EVENT':
+        dbItem.blackWhiteFilter = {
+          bucket: item.bucket,
+          key: item.key
+        }
+        break
+      case 'THUMBNAIL_EVENT':
+        dbItem.thumbnail = {
+          bucket: item.bucket,
+          key: item.key
+        }
+        break
+    }
+    await dynamodbService.putItem(dbItem)
   }
-
-  await new (Promise((resolve, reject) => {
-    dynamo.get({
-      TableName: 'images',
-      Key: {
-        id: '123'
-      }
-    }, (err, data) => {
-      console.log('err', err)
-      console.log('data', data)
-      return resolve({})
-    })
-  }))()
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event
-      },
-      null,
-      2
-    )
-  }
-
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
+  return { message: 'Mensagem consumida com sucesso!', event }
 }

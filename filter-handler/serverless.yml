@@ -58,7 +58,7 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
+  filter:
     handler: handler.filter
     role: arn:aws:iam::935245962507:role/lambda-sqs-s3
 #    The following are a few example events you can configure

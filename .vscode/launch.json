@@ -8,12 +8,12 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Serverless",     
-      "program": "${workspaceFolder}/image-tagging-filter/node_modules/.bin/serverless",
+      "program": "${workspaceFolder}/http-handler/node_modules/.bin/serverless",
       "args":[
         "invoke",
         "local",
         "--function",
-        "tag",
+        "upload",
         "--path",
         "data.json"
       ]

@@ -1,14 +1,14 @@
-const AWS = require ('aws-sdk')
+const AWS = require('aws-sdk')
 
 AWS.config.update({
   region: 'us-east-1'
 })
 
 const dynamodb = new AWS.DynamoDB.DocumentClient()
-const TABLE ='imagens';
+const TABLE = 'imagens'
 
 const put = item => {
-  return new Promise((res,rej) => {
+  return new Promise((resolve, reject) => {
     dynamodb.put({
       TableName: TABLE,
       Item: {
@@ -16,14 +16,14 @@ const put = item => {
         bucket: item.bucket
       }
     }, (err, data) => {
-      if(err) {
-        return rej(err)
+      if (err) {
+        return reject(err)
       }
-      return res(data)
+      return resolve(data)
     })
   })
 }
 
 module.exports = {
-  put:put
+  put: put
 }

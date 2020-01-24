@@ -6,11 +6,11 @@ AWS.config.update({
 
 const BUCKET = 'nanoservices-images-thumbnail-curso'
 
-const S3 = new AWS.S3()
+const s3 = new AWS.S3()
 
 const getObject = (bucket, key) => {
   return new Promise((resolve, reject) => {
-    S3.getObject({
+    s3.getObject({
       Bucket: bucket,
       Key: key
     }, (err, data) => {
@@ -24,9 +24,9 @@ const getObject = (bucket, key) => {
 
 const putObject = (buffer, filename) => {
   return new Promise((resolve, reject) => {
-    S3.putObject({
+    s3.putObject({
       Bucket: BUCKET,
-      Key: `${filename}`,
+      Key: filename,
       Body: buffer
     }, (err, data) => {
       if (err) {
@@ -34,7 +34,7 @@ const putObject = (buffer, filename) => {
       }
       return resolve({
         bucket: BUCKET,
-        key: `${filename}`
+        key: filename
       })
     })
   })

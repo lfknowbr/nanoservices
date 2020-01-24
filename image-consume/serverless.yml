@@ -67,6 +67,7 @@ functions:
        - subnet-00840e9ab68c9cb9c
       securityGroupIds:
        - sg-05bf8401ad8b68371
+    reservedConcurrency: 1
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
