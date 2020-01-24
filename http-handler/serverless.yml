@@ -64,17 +64,19 @@ functions:
           path: images
           method: post
 
-
   get:
-    get: handler.get
-    role: arn:aws:iam::935245962507:role/lambda-http-handler.get
-  #    The following are a few example events you can configure
-  #    NOTE: Please make sure to change your handler code to work with those events
-  #    Check the event documentation for details
-      events:
-        - http:
-            path: images
-            method: post          
+    handler: handler.get
+    role: arn:aws:iam::935245962507:role/lambda-http-handler-get
+    vpc:
+      subnetIds:
+        - subnet-060ec8835994acf88
+      securityGroupIds:
+        - sg-05bf8401ad8b68371     
+
+    events:
+      - http:
+          path: images
+          method: get          
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
